@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -12,42 +14,16 @@ namespace WebApp
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Создать новый объект HtmlTable
-            HtmlTable table1 = new HtmlTable();
-
-            // Установить свойства форматирования таблицы
-            table1.Border = 1;
-            table1.CellPadding = 3;
-            table1.CellSpacing = 3;
-            table1.BorderColor = "red";
-
-            // Начать добавлять содержимое в таблицу
-            HtmlTableRow row;
-            HtmlTableCell cell;
-
-            for (int i = 1; i <= 5; i++)
-            {
-                // Создать новую строку и установить для нее цвет фона
-                row = new HtmlTableRow();
-                row.BgColor = (i % 2 == 0 ? "lightyellow" : "lightcyan");
-
-                for (int j = 1; j <= 4; j++)
-                {
-                    // Создать ячейку и установить ее текст
-                    cell = new HtmlTableCell();
-                    cell.InnerHtml = "Row: " + i.ToString() +
-                        "<br />Cell: " + j.ToString();
-
-                    // Добавить ячейку в текущую строку
-                    row.Cells.Add(cell);
-                }
-
-                // Добавить строку в таблицу
-                table1.Rows.Add(row);
-            }
-
-            // Добавить таблицу внутрь страницы
-            this.Controls.Add(table1);
+            string connectionString = "DATA SOURCE=192.168.36.135:1521/DEV; PASSWORD=pw;PERSIST SECURITY INFO=True;USER ID=MDM";
+            OracleConnection _connection = new OracleConnection();
+            _connection.ConnectionString = connectionString;
+            DataTable dataTable = new DataTable();
+            _connection.Open();
+            string sql = "select * from test_sa";
+            OracleCommand command = new OracleCommand(sql, _connection);
+            GridView1.DataSource = command.ExecuteReader();
+            GridView1.DataBind();
+            _connection.Close();
         }
 
     }
